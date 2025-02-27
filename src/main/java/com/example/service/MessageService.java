@@ -21,7 +21,7 @@ public class MessageService {
     public Message createMessage(Message message) {
         // Check that message text is not blank
         if (message.getMessageText() == null || message.getMessageText().length() == 0) {
-            return null; // Blank message text
+            return null;
         }
         
         // Check that message text is not too long
@@ -40,6 +40,35 @@ public class MessageService {
 
     public List<Message> getAllMessages() {
         return messageRepository.findAll();
+    }
+
+    public Message getMessageById(int messageId) {
+        return messageRepository.findById(messageId).orElse(null);
+    }
+
+    public int deleteMessageById(int messageId) {
+        if (messageRepository.existsById(messageId)) {
+            messageRepository.deleteById(messageId);
+            return 1;
+        }
+        return 0;
+    }
+
+    public int updateMessageText(int messageId, String newMessageText) {
+        Optional<Message> existingMessage = messageRepository.findById(messageId);
+        
+        if (existingMessage.isPresent()) {
+            Message message = existingMessage.get();
+            message.setMessageText(newMessageText);
+            messageRepository.save(message);
+            return 1;
+        }
+        
+        return 0;
+    }
+
+    public List<Message> getMessagesByAccountId(int accountId) {
+        return messageRepository.findByPostedBy(accountId);
     }
 
 }

@@ -67,4 +67,42 @@ public class SocialMediaController {
         return ResponseEntity.status(200).body(messages);
     }
 
+    @GetMapping("/messages/{messageId}")
+    public ResponseEntity<Message> getMessageById(@PathVariable int messageId) {
+        Message message = messageService.getMessageById(messageId);
+        return ResponseEntity.status(200).body(message);
+    }
+
+    @DeleteMapping("/messages/{messageId}")
+    public ResponseEntity<Integer> deleteMessage(@PathVariable int messageId) {
+        int rowsDeleted = messageService.deleteMessageById(messageId);
+        if (rowsDeleted > 0) {
+            return ResponseEntity.status(200).body(1);
+        } else {
+            return ResponseEntity.status(200).body(null);
+        }
+    }
+
+    @PatchMapping("/messages/{messageId}")
+    public ResponseEntity<Integer> updateMessage(@PathVariable int messageId, @RequestBody Message message) {
+
+        if (message.getMessageText() == null || message.getMessageText().length() == 0 || message.getMessageText().length() > 255) {
+            return ResponseEntity.status(400).body(null);
+        }
+
+        int rowsUpdated = messageService.updateMessageText(messageId, message.getMessageText());
+
+        if (rowsUpdated > 0) {
+            return ResponseEntity.ok(1);
+        } else {
+            return ResponseEntity.status(400).body(null);
+        }
+    }
+
+    @GetMapping("/accounts/{accountId}/messages")
+    public ResponseEntity<List<Message>> getMessagesByUser(@PathVariable int accountId) {
+        List<Message> messages = messageService.getMessagesByAccountId(accountId);
+        return ResponseEntity.ok(messages); // Always returns 200, even if the list is empty
+    }
+
 }
