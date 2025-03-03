@@ -24,6 +24,7 @@ public class SocialMediaController {
     @Autowired
     private MessageService messageService;
 
+    // 1: Our API should be able to process new User registrations.
     @PostMapping("/register")
     public ResponseEntity<?> registerAccount(@RequestBody Account account){
         Account newAccount = accountService.registerAccount(account);
@@ -39,6 +40,7 @@ public class SocialMediaController {
         return ResponseEntity.status(200).body(newAccount);
     }
 
+    // 2: Our API should be able to process User logins.
     @PostMapping("/login")
     public ResponseEntity<?> userLogin(@RequestBody Account account) {
         Account loggedInAccount = accountService.login(account.getUsername(), account.getPassword());
@@ -50,6 +52,7 @@ public class SocialMediaController {
         return ResponseEntity.status(200).body(loggedInAccount);
     }
 
+    // 3: Our API should be able to process the creation of new messages.
     @PostMapping("/messages")
     public ResponseEntity<?> createMessage(@RequestBody Message message) {
         Message newMessage = messageService.createMessage(message);
@@ -61,18 +64,21 @@ public class SocialMediaController {
         return ResponseEntity.ok(newMessage);
     }
 
+    // 4: Our API should be able to retrieve all messages.
     @GetMapping("/messages")
     public ResponseEntity<?> getAllMessages() {
         List<Message> messages = messageService.getAllMessages();
         return ResponseEntity.status(200).body(messages);
     }
 
+    // 5: Our API should be able to retrieve a message by its ID.
     @GetMapping("/messages/{messageId}")
     public ResponseEntity<Message> getMessageById(@PathVariable int messageId) {
         Message message = messageService.getMessageById(messageId);
         return ResponseEntity.status(200).body(message);
     }
 
+    // 6: Our API should be able to delete a message identified by a message ID.
     @DeleteMapping("/messages/{messageId}")
     public ResponseEntity<Integer> deleteMessage(@PathVariable int messageId) {
         int rowsDeleted = messageService.deleteMessageById(messageId);
@@ -83,6 +89,7 @@ public class SocialMediaController {
         }
     }
 
+    // 7: Our API should be able to update a message text identified by a message ID.
     @PatchMapping("/messages/{messageId}")
     public ResponseEntity<Integer> updateMessage(@PathVariable int messageId, @RequestBody Message message) {
 
@@ -99,6 +106,7 @@ public class SocialMediaController {
         }
     }
 
+    // 8: Our API should be able to retrieve all messages written by a particular user.
     @GetMapping("/accounts/{accountId}/messages")
     public ResponseEntity<List<Message>> getMessagesByUser(@PathVariable int accountId) {
         List<Message> messages = messageService.getMessagesByAccountId(accountId);
